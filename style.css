@@ -8,9 +8,6 @@ body {
 	flex-direction: column;
 	height: 100vh;
 }
-#status {
-	flex: 1;
-}
 #header {
 	flex : 1;
 	background-color: blue;
@@ -22,24 +19,66 @@ body {
 	justify-content: center;
 }
 
+#status {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+#table {
+	flex: 1;
+	background-color: forestgreen;
+	display: flex;
+	flex-direction: column;
+}
+#rollingdice {
+	padding-top: 50px;
+	flex: 1;
+	display: flex;
+	justify-content: space-around;
+}
+#combination {
+	flex: 1;
+}
+
+#inventory {
+	flex: 2;
+	background-color: black;
+}
+
+#roll {
+	height: 45px;
+	width: 45px;
+	border-radius: 100%;
+	background-color: blue;
+	color: white;
+	text-align: center;
+	line-height: 45px;
+}
+
 .column {
-	width: 70px;
-	height: 90%;
+	width: 8%;
+	height: 85%;
 	display: flex;
 	flex-direction: column-reverse;
 }
 
 .number {
-	height: 50px;
+	height: 5%;
 	border: 1px solid red;
 }
 
 .tile {
-	height: 50px;
+	height: 5%;
 	border: 1px solid black;
 }
 
 .conquer {
-	height: 50px;
+	height: 5%;
 	border: 1px solid blue;
+}
+.dice {
+	width: 45px;
+	height: 45px;
+	background-color: red;
+	color: white;
 }
