@@ -10,7 +10,11 @@ body {
 }
 #header {
 	flex : 1;
-	background-color: blue;
+	background-color: black;
+	color: white;
+	font-size: 6.5vh;
+	text-align: center;
+	line-height: 14vh;
 }
 #board {
 	flex : 5;
@@ -36,13 +40,12 @@ body {
 	display: flex;
 	justify-content: space-around;
 }
-#combination {
-	flex: 1;
-}
 
 #inventory {
-	flex: 2;
-	background-color: black;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background-color: white;
 }
 
 #roll {
@@ -54,7 +57,51 @@ body {
 	text-align: center;
 	line-height: 45px;
 }
-
+#dice-place {
+	padding-top: 50px;
+	display: flex;
+	justify-content: space-around;
+	background-color: green;
+}
+#player1 {
+	text-align: center;
+	line-height: 9.5vh;
+	font-size: 3vh;
+	flex: 1;
+	background-color: magenta;
+}
+#player2 {
+	text-align: center;
+	line-height: 9.5vh;
+	font-size: 3vh;
+	flex: 1;
+	background-color: rgb(241, 196, 15);
+}
+#player3 {
+	text-align: center;
+	line-height: 9.5vh;
+	font-size: 3vh;
+	flex: 1;
+	background-color: cyan;
+}
+#turntrack {
+	flex: 2;
+	display: flex;
+}
+#nowturn {
+	font-size: 3vh;
+	flex: 1;
+	text-align: center;
+	line-height: 9vh;
+}
+#nextturn {
+	flex: 1;
+	background-color: lightcoral;
+	color: white;
+	text-align: center;
+	font-size: 3vh;
+	line-height: 18vh;
+}
 .column {
 	width: 8%;
 	height: 85%;
@@ -63,22 +110,54 @@ body {
 }
 
 .number {
-	height: 5%;
-	border: 1px solid red;
+	height: 6%;
+	background-color: orangered;
+	color: white;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 2.5vh;
 }
 
 .tile {
-	height: 5%;
+	height: 6%;
 	border: 1px solid black;
 }
 
 .conquer {
-	height: 5%;
+	height: 6%;
 	border: 1px solid blue;
 }
+
 .dice {
-	width: 45px;
-	height: 45px;
-	background-color: red;
-	color: white;
+	width: 8vh;
+	height: 8vh;
+	background-color: lightyellow;
+	color: black;
+	text-align: center;
+	font-weight: bold;
+	font-size: 3.5vh;
+	line-height: 7.5vh;
+}
+
+.combination {
+	flex: 1;
+	background-color: orange;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.combi-button {
+	border: 1px solid black;
+	height: 65%;
+	width: 50%;
+	display: flex;
+}
+
+.combi-cell {
+	border: 1px solid black;
+	flex: 1;
+	font-size: 4.7vh;
+	text-align: center;
+	line-height: 10vh;
 }
