@@ -15,6 +15,7 @@ body {
 	font-size: 6.5vh;
 	text-align: center;
 	line-height: 14vh;
+	cursor: pointer;
 }
 #board {
 	flex : 5;
@@ -33,12 +34,6 @@ body {
 	background-color: forestgreen;
 	display: flex;
 	flex-direction: column;
-}
-#rollingdice {
-	padding-top: 50px;
-	flex: 1;
-	display: flex;
-	justify-content: space-around;
 }
 
 #inventory {
@@ -121,6 +116,16 @@ body {
 .tile {
 	height: 6%;
 	border: 1px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.blackdot {
+	height: 2.5vh;
+	width: 2.5vh;
+	background-color: black;
+	border-radius: 100%;
 }
 
 .conquer {
