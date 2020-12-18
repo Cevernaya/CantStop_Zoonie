@@ -107,6 +107,30 @@ function update() {
 }
 
 
+function roll() {
+    if(state == 1) return
+    
+    // PUT RANDOM NUMBER IN DICES
+    for(var i = 0; i<dice.length; i++){
+		dice[i] = Math.floor(Math.random()*6+1)
+	}
+    // MAKE COMBINATION
+    combi[0][0]=dice[0]+dice[1]
+	combi[0][1]=dice[2]+dice[3]
+    
+    combi[1][0]=dice[0]+dice[2]
+    combi[1][1]=dice[1]+dice[3]
+	
+	combi[2][0]=dice[0]+dice[3]
+	combi[2][1]=dice[1]+dice[2]
+    
+	// MAKE PLAYER MUST CHOOSE
+	state = 1
+    
+    // UPDATE 
+    update()
+}
+
 header.addEventListener("mouseover", function(){
 	header.innerHTML = "let's roll"
 })
