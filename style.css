@@ -70,7 +70,7 @@ body {
 	line-height: 9.5vh;
 	font-size: 3vh;
 	flex: 1;
-	background-color: rgb(241, 196, 15);
+	background-color: yellow;
 }
 #player3 {
 	text-align: center;
@@ -128,9 +128,45 @@ body {
 	border-radius: 100%;
 }
 
+.bluedot {
+	height: 2.5vh;
+	width: 2.5vh;
+	background-color: blue;
+	border-radius: 100%;
+}
+
+.reddot {
+	height: 2.5vh;
+	width: 2.5vh;
+	background-color: red;
+	border-radius: 100%;
+}
+
+.magentadot {
+    height: 2.5vh;
+	width: 2.5vh;
+	background-color: magenta;
+	border-radius: 100%;
+}
+.yellowdot {
+    height: 2.5vh;
+	width: 2.5vh;
+	background-color: yellow;
+	border-radius: 100%;
+}
+.cyandot {
+    height: 2.5vh;
+	width: 2.5vh;
+	background-color: cyan;
+	border-radius: 100%;
+}
+
 .conquer {
 	height: 6%;
 	border: 1px solid blue;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .dice {
