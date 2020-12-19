@@ -3,7 +3,7 @@ var turn = 0	// Player number
 var state = 0    // 0: can roll or be chicken, 1: choose combi
 var dice = [3, 1, 5, 2]	//1st, 2nd, 3rd, 4th dice's number
 var combi = [[null, null], [null, null], [null, null]] // (1st+2nd, 3rd+4th), (1st+3rd, 2nd+4th), (1st+4th, 2nd+3rd)
-var blackDotPlace = [[1, 3], [4, 7], [8, 4]]	// coordination of black dots, strictly follows column & tile elements' children order. ex) every number tile is [i, 0]
+var blackDotPlace = []	// coordination of black dots, strictly follows column & tile elements' children order. ex) every number tile is [i, 0]
 var baseCamps = [new Array(11), new Array(11), new Array(11)] // coordianate of player's basecamp, baseCapms[playerIndex][column] = baseCampPlace
 var isConquered = new Array(11)
 var playerPoint = [0, 0, 0] //p1 point , p2 point, p3 point
@@ -130,6 +130,96 @@ function roll() {
     // UPDATE 
     update()
 }
+
+function chooseCombi(com, num) {
+    combi[com][num]
+    
+	if(state == 0) return
+	
+    // CHECK IF THIS COMBI IS ALREADY CONQUERED
+    if(isConquered[combi[com][0]-2] && isConquered[combi[com][1]-2])
+	{
+		return
+	}
+    
+    // CHECK IF BLACKDOT IS NOT FOR THIS COMBI 
+    
+    
+    
+    
+    
+    
+    if(blackDotPlace.length == 3) {
+        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 불가능
+			return
+        }
+        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 앞에꺼 한 칸 올림
+        }
+        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 뒤에꺼 한 칸 올림
+        }
+        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 둘 다 한 칸씩 올림
+			
+        }
+    }
+    else if(blackDotPlace.length == 2) {
+        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 불가능
+			return
+        }
+        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 앞에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+        }
+        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 뒤에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+        }
+        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 둘 중 하나 선택(num)되었고, 현재 이미 진행중이면 올리고 만약 비어있으면 추가 (경우 2가지) !! 여기가 좀 바꿔야할거같
+        }
+    }
+    else if(blackDotPlace.length == 1) {
+        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+			return                
+        }
+        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 앞에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+        }
+        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 뒤에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+        }
+        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 둘 다 올리거나, 둘 중 비어있는 것은 새로 추가
+        }
+    }
+    else if(blackDotPlace.length == 0) {
+        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 불가능
+            return                      
+        }
+        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+            // 앞에꺼 새로 추가
+        }
+        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 뒤에꺼 새로 추가
+        }
+        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+            // 둘다 새로 추가
+        }
+    }
+    
+    
+    
+    update()
+}
+
+
+function beChicken() {
+    
+}
+
 
 header.addEventListener("mouseover", function(){
 	header.innerHTML = "let's roll"
