@@ -1,10 +1,42 @@
+// Warn if overriding existing method
+if(Array.prototype.equals)
+    console.warn("Overriding existing Array.prototype.equals. Possible causes: New API defines the method, there's a framework conflict or you've got double inclusions in your code.");
+// attach the .equals method to Array's prototype to call it on any array
+Array.prototype.equals = function (array) {
+    // if the other array is a falsy value, return
+    if (!array)
+        return false;
+
+    // compare lengths - can save a lot of time 
+    if (this.length != array.length)
+        return false;
+
+    for (var i = 0, l=this.length; i < l; i++) {
+        // Check if we have nested arrays
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!this[i].equals(array[i]))
+                return false;       
+        }           
+        else if (this[i] != array[i]) { 
+            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+            return false;   
+        }           
+    }       
+    return true;
+}
+// Hide method from for-in loops
+Object.defineProperty(Array.prototype, "equals", {enumerable: false});
+
 // DATA
 var turn = 0	// Player number
 var state = 0    // 0: can roll or be chicken, 1: choose combi
 var dice = [3, 1, 5, 2]	//1st, 2nd, 3rd, 4th dice's number
 var combi = [[null, null], [null, null], [null, null]] // (1st+2nd, 3rd+4th), (1st+3rd, 2nd+4th), (1st+4th, 2nd+3rd)
 var blackDotPlace = []	// coordination of black dots, strictly follows column & tile elements' children order. ex) every number tile is [i, 0]
-var baseCamps = [new Array(11), new Array(11), new Array(11)] // coordianate of player's basecamp, baseCapms[playerIndex][column] = baseCampPlace
+var baseCamps = [[0,0,0,0,0,0,0,0,0,0,0], 
+				 [0,0,0,0,0,0,0,0,0,0,0],
+				 [0,0,0,0,0,0,0,0,0,0,0]] // coordianate of player's basecamp, baseCapms[playerIndex][column] = baseCampPlace
 var isConquered = new Array(11)
 var playerPoint = [0, 0, 0] //p1 point , p2 point, p3 point
 
@@ -15,7 +47,7 @@ combi = [[5,6],[3,8],[7,4]]
 
 blackDotPlace = [[4,3],[5,4],[7,4]]
 
-baseCamps = [[undefined,undefined,3,undefined,undefined,undefined,7,5,2,1,undefined],[1,undefined,undefined,undefined,undefined,3,undefined,5,4,3,2],[undefined,undefined,undefined,3,undefined,undefined,undefined,undefined,undefined,undefined,undefined]]
+baseCamps = [[0,0,3,0,0,0,7,5,2,1,0],[1,0,0,0,0,3,0,5,4,3,2],[0,0,0,3,0,0,0,0,0,0,0]]
 isConquered = [undefined, 1, 2, 0, undefined, 0, undefined, 2, 1, undefined, 0]
 playerPoint = [1, 2, 3]
 */
@@ -69,7 +101,7 @@ function update() {
 	// UPDATE BASECAMP
     for(var i=0; i<3; i++){    // i: player
         for(var j=0; j<baseCamps[i].length; j++){    // j: column
-            if(baseCamps[i][j] !== undefined) {
+            if(baseCamps[i][j] != 0) {
                 var s = columns[j].children[baseCamps[i][j]].innerHTML
                 if(i == 0) {
                     columns[j].children[baseCamps[i][j]].innerHTML = s + "<div class='magentadot'></div>"
@@ -86,7 +118,7 @@ function update() {
     
     // UPDATE ISCONQUERED
     for(var i=0; i<11; i++){
-        if(isConquered[i] !== undefined){
+        if(isConquered[i] != undefined){
             var l = columns[i].children.length
             if(i == 0) {
                 columns[i].children[l-1].innerHTML = "<div class='magentadot'></div>"
@@ -132,85 +164,227 @@ function roll() {
 }
 
 function chooseCombi(com, num) {
-    combi[com][num]
+    let isCombiIn = false
+    let combiReal = [combi[com][0]-2, combi[com][1]-2]
+    
+    let originalBlackDot = Object.assign([], blackDotPlace)
     
 	if(state == 0) return
-	
-    // CHECK IF THIS COMBI IS ALREADY CONQUERED
-    if(isConquered[combi[com][0]-2] && isConquered[combi[com][1]-2])
-	{
-		return
-	}
-    
-    // CHECK IF BLACKDOT IS NOT FOR THIS COMBI 
-    
-    
-    
-    
-    
     
     if(blackDotPlace.length == 3) {
-        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        if(isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 불가능
 			return
         }
-        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 앞에꺼 한 칸 올림
+            for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                }
+            }
         }
-        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 뒤에꺼 한 칸 올림
+            for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                }
+            }
         }
-        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 둘 다 한 칸씩 올림
-			
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                }
+            }
+            for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                }
+            }
         }
     }
     else if(blackDotPlace.length == 2) {
-        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        if(isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 불가능
 			return
         }
-        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 앞에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+            }
         }
-        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 뒤에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+			isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+            }
         }
-        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 둘 중 하나 선택(num)되었고, 현재 이미 진행중이면 올리고 만약 비어있으면 추가 (경우 2가지) !! 여기가 좀 바꿔야할거같
+            var combi0exist = (blackDotPlace.findIndex(bdp => bdp[0] == combiReal[0]) > -1)
+            var combi1exist = (blackDotPlace.findIndex(bdp => bdp[0] == combiReal[1]) > -1)
+    
+            if(combi0exist || combi1exist) {
+                isCombiIn = false
+                for(let i=0; i<blackDotPlace.length; i++){
+                    if(blackDotPlace[i][0] == combiReal[0]){
+                        blackDotPlace[i][1] += 1
+                        isCombiIn = true
+                    }
+                }
+                if(!isCombiIn){
+                    blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+                }
+                
+                isCombiIn = false
+                for(let i=0; i<blackDotPlace.length; i++){
+                    if(blackDotPlace[i][0] == combiReal[1]){
+                        blackDotPlace[i][1] += 1
+                        isCombiIn = true
+                    }
+                }
+                if(!isCombiIn){
+                    blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+                }
+            }
+            else{
+                isCombiIn = false
+                for(let i=0; i<blackDotPlace.length; i++){
+                    if(blackDotPlace[i][0] == combiReal[num]){
+                        blackDotPlace[i][1] += 1
+                        isCombiIn = true
+                    }
+                }
+                if(!isCombiIn){
+                    blackDotPlace.push([combiReal[num], baseCamps[turn][combiReal[num]]+1])
+                }
+            }
         }
     }
     else if(blackDotPlace.length == 1) {
-        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        if(isConquered[combiReal[0]] && isConquered[combiReal[1]]){
 			return                
         }
-        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 앞에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+            }
         }
-        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 뒤에꺼 - 현재 이미 진행중이면 올리고 만약 비어있으면 추가
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+            }
         }
-        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
-            // 둘 다 올리거나, 둘 중 비어있는 것은 새로 추가
+        else if(!isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
+            // 둘 다 올리기
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+            }
+            
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+            }
         }
     }
     else if(blackDotPlace.length == 0) {
-        if(isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        if(isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 불가능
             return                      
         }
-        else if(!isConquered[combi[com][0]] && isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && isConquered[combiReal[1]]){
             // 앞에꺼 새로 추가
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[0]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+            }
         }
-        else if(isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 뒤에꺼 새로 추가
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+            }
         }
-        else if(!isConquered[combi[com][0]] && !isConquered[combi[com][1]]){
+        else if(!isConquered[combiReal[0]] && !isConquered[combiReal[1]]){
             // 둘다 새로 추가
+            blackDotPlace.push([combiReal[0], baseCamps[turn][combiReal[0]]+1])
+            
+            isCombiIn = false
+			for(let i=0; i<blackDotPlace.length; i++){
+                if(blackDotPlace[i][0] == combiReal[1]){
+                    blackDotPlace[i][1] += 1
+                    isCombiIn = true
+                }
+            }
+            if(!isCombiIn){
+                blackDotPlace.push([combiReal[1], baseCamps[turn][combiReal[1]]+1])
+            }
         }
     }
     
-    
+    if(!originalBlackDot.equals(blackDotPlace)) {
+        state = 0
+    }
     
     update()
 }
