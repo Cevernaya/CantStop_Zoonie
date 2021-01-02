@@ -71,7 +71,7 @@ var combiCells = document.getElementsByClassName('combi-cell')
 function update() {
     // CLEAR BOARD
     for(var i=0; i<columns.length; i++){
-        for(var j=1; j<columns[i].children.length-1; j++){
+        for(var j=1; j<columns[i].children.length; j++){
             columns[i].children[j].innerHTML = ""
         }
     }
@@ -174,7 +174,7 @@ function chooseCombi(com, num) {
             blackDotPlace[findRes][1] += 1
             state = 0
         }
-        else if(findRes == -1 && blackDotPlace.length < 3) {
+        else if(findRes == -1 && blackDotPlace.length < 3 && isConquered[tc-2] == undefined) {
             console.log(baseCamps[turn][tc-2])
             blackDotPlace.push([tc-2, baseCamps[turn][tc-2] + 1])
             state = 0
@@ -186,7 +186,28 @@ function chooseCombi(com, num) {
 }
 
 function beChicken() {
+    if(state == 0) {
+        blackDotPlace.map(bdp => {
+            baseCamps[turn][bdp[0]] = bdp[1]
+            if(baseCamps[turn][bdp[0]] == 13 - 2*Math.abs(5-bdp[0])) {
+                isConquered[bdp[0]] = turn
+                playerPoint[turn] += 1
+                if(playerPoint[turn] == 3) {
+                    alert(`Player ${(turn+1)} WIN`)
+                }
+            }
+        })
+        blackDotPlace = []
+        turn = (turn + 1)%3
+    }
+	else if(state == 1) {
+		blackDotPlace = []
+		alert("YOU IDIOT ASSHOLE")
+		turn = (turn +1)%3
+		state = 0
+	}
     
+    update()
 }
 
 

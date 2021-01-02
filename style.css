@@ -96,6 +96,7 @@ body {
 	text-align: center;
 	font-size: 3vh;
 	line-height: 18vh;
+	cursor: pointer;
 }
 .column {
 	width: 8%;
