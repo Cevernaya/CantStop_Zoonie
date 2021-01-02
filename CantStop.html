@@ -9,7 +9,7 @@
 	<body>
 		
 		<div id="main">
-			<div id="header">
+			<div id="header" onclick = "roll()">
 				Can't Stop
 			</div>
 			<div id="dice-place">
@@ -356,30 +356,30 @@
 			<div id = "table">
 				<div class = "combination">
 					<div class="combi-button">
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(0,0)">
 							1
 						</div>
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(0,1)">
 							2
 						</div>
 					</div>
 				</div>
 				<div class = "combination">
 					<div class="combi-button">
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(1,0)">
 							3
 						</div>
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(1,1)">
 							4
 						</div>
 					</div>
 				</div>
 				<div class = "combination">
 					<div class="combi-button">
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(2,0)">
 							5
 						</div>
-						<div class="combi-cell">
+						<div class="combi-cell" onclick = "chooseCombi(2,1)">
 							6
 						</div>
 					</div>
